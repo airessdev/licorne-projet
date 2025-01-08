@@ -1,50 +1,76 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const slider = document.querySelector('.slider');
-    const slides = document.querySelectorAll('.slide');
-    const prevBtn = document.querySelector('.prev');
-    const nextBtn = document.querySelector('.next');
-    const dotsContainer = document.querySelector('.dots');
+document.addEventListener("DOMContentLoaded", () => {
+  const slider = document.querySelector(".slider");
+  const slides = document.querySelectorAll(".slide");
+  const prevBtn = document.querySelector(".prev");
+  const nextBtn = document.querySelector(".next");
+  const dotsContainer = document.querySelector(".dots");
+  const cornesTitle = document.getElementById("cornes-title");
+  const cornesMenu = document.getElementById("cornes-menu");
 
-    let currentSlide = 0;
-    const slideCount = slides.length;
+  // Check if elements exist
+  if (
+    !slider ||
+    !slides.length ||
+    !prevBtn ||
+    !nextBtn ||
+    !dotsContainer ||
+    !cornesTitle ||
+    !cornesMenu
+  ) {
+    console.error("Missing required elements");
+    return;
+  }
 
-    // Create dots
-    slides.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.classList.add('dot');
-        if (index === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(index));
-        dotsContainer.appendChild(dot);
+  let currentSlide = 0;
+  const slideCount = slides.length;
+
+  // Create dots
+  slides.forEach((_, index) => {
+    const dot = document.createElement("div");
+    dot.classList.add("dot");
+    if (index === 0) dot.classList.add("active");
+    dot.addEventListener("click", () => goToSlide(index));
+    dotsContainer.appendChild(dot);
+  });
+
+  const dots = document.querySelectorAll(".dot");
+
+  function updateDots() {
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === currentSlide);
     });
+  }
 
-    const dots = document.querySelectorAll('.dot');
+  function goToSlide(n) {
+    currentSlide = n;
+    const offset = currentSlide * 100;
+    slider.style.transform = `translateX(-${offset}%)`;
+    updateDots();
+  }
 
-    function updateDots() {
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentSlide);
-        });
-    }
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slideCount;
+    goToSlide(currentSlide);
+  }
 
-    function goToSlide(n) {
-        currentSlide = n;
-        slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-        updateDots();
-    }
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+    goToSlide(currentSlide);
+  }
 
-    function nextSlide() {
-        currentSlide = (currentSlide + 1) % slideCount;
-        goToSlide(currentSlide);
-    }
+  // Add event listeners
+  prevBtn.addEventListener("click", prevSlide);
+  nextBtn.addEventListener("click", nextSlide);
 
-    function prevSlide() {
-        currentSlide = (currentSlide - 1 + slideCount) % slideCount;
-        goToSlide(currentSlide);
-    }
+  // Initialize first slide
+  goToSlide(0);
 
-    // Event listeners
-    prevBtn.addEventListener('click', prevSlide);
-    nextBtn.addEventListener('click', nextSlide);
+  // Optional: Auto-advance slides
+  setInterval(nextSlide, 5000);
 
-    // Auto advance slides every 5 seconds
-    setInterval(nextSlide, 5000);
+  // Toggle cornes menu visibility
+  cornesTitle.addEventListener("click", () => {
+    cornesMenu.classList.toggle("hidden");
+    cornesMenu.classList.toggle("visible");
+  });
 });

@@ -179,3 +179,10 @@ p {
     font-size: 1rem;
   }
 }
+.hidden {
+  display: none;
+}
+
+.visible {
+  display: block;
+}
